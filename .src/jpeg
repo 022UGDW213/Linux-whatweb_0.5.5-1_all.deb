@@ -1,18 +1,24 @@
-*.tar
-*.tar.*
-*.jar
-*.exe
-*.msi
-*.zip
-*.tgz
-*.log
-*.log.*
-*.sig
+#
+.src{src}
 
-pkg/
-.src{
-
-.src/whatweb_0.5.5-1_all.zip
-
-.src/https://github.com/022UGDW213/Linux-whatweb_0.5.5-1_all.deb/blob/1ae9f25481a6d17ae24031170aaaccd02c9d6c5a/Web%20capture_23-10-2022_52453_ubuntu.pkgs.org.jpeg 
-.src
+ *.
+ *.jar
+ *.exe
+ *.msi
+ *.zip
+ *.tgz
+ *.log
+ *.sig
+ *.pkg
+ *.jpeg
+ *.https
+ *.
+#
+ .src
+ whatweb_0.5.5-1_all.zip
+ .src/
+ #
+ .src
+ (https://github.com/022UGDW213/Linux-whatweb_0.5.5-1_all.deb/blob/1ae9f25481a6d17ae24031170aaaccd02c9d6c5a/Web%20capture_23-10-2022_52453_ubuntu.pkgs.org.jpeg)
+ .src/
+ #
