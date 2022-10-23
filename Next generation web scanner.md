@@ -1,4 +1,4 @@
-
+.src/
 
 [Whatweb_0.5.5-1_all.deb]
 
