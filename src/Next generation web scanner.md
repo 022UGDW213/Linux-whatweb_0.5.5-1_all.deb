@@ -110,3 +110,5 @@ Install whatweb deb package:
 [whois_5.5.10_arm64.deb]	<intelligent WHOIS client>]
 
 [©2009-2022 - Packages for Linux and Unix]
+  
+  .src/https://github.com/022UGDW213/Linux-whatweb_0.5.5-1_all.deb/blob/1ae9f25481a6d17ae24031170aaaccd02c9d6c5a/Web%20capture_23-10-2022_52453_ubuntu.pkgs.org.jpeg
