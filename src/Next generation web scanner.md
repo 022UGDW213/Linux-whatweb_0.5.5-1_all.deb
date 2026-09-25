@@ -1,3 +1,6 @@
+> **Correction header added 2026-09-26 by this repository — the captured page text below is unaltered.**
+> This file is a verbatim copy of a pkgs.org-style package page (original sha256 `219c59d010bfebbabccc1a75dcd7269cdbed92742d469b92f15432d76d88fea9`, kept for provenance). Three of its statements do not match the package bytes it accompanies, measured on 2026-09-26: the header **"Files 8"** (its own list below names 10 paths; the real package ships **1,861** files), **"Repository Debian Main arm64 Official"** (the package is `Architecture: all`, and its members are byte-identical to the file served from Debian's amd64 pool path), and the **"Changelog"** line attributing `2022-10-23` to `Juan JSP` (the package's real changelog is by `Laszlo Boszormenyi (GCS) <gcs@debian.org>`, latest entry `whatweb (0.5.5-1)` dated `Fri, 15 Jan 2021`, in `usr/share/doc/whatweb/changelog.Debian.gz` — the 2022-10-23 line is a capture-time web-page annotation). The page's "over 900 plugins" text is genuinely the package `control` Description verbatim, although the measured plugin count is **1,824**. See `README.md` §6 for the commands.
+
 .src/
 
 [Whatweb_0.5.5-1_all.deb]
