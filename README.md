@@ -340,8 +340,13 @@ git show fd58e04:.gitignore > /tmp/orig_gitignore && diff -u /tmp/orig_gitignore
 # → *.tar and *.tar.* are reduced to " *." and "*.", *.log.* / pkg/ / src/ are gone,
 #   every surviving glob gained a leading space, and 14 lines were added
 for c in 23be4fc 9f52163 02b3f8d daae854 15b62e5 f12719e; do git show $c:.src/jpeg | wc -lc; done
-# → 14 234 | 16 269 | 16 161 | 17 275 | 24 314 | 24 316
+# → six two-field lines (lines, then bytes):
+#     14     234 |     16     269 |     16     161
+#     17     275 |     24     314 |     24     316
 ```
+
+(`wc -lc` prints `lines bytes`. Piped into `wc` the fields are right-aligned to width 7;
+redirected from a file GNU `wc` uses the narrower width — the numbers are the same.)
 
 | Commit (all 2022-10-23) | Subject | `.src/jpeg` |
 |---|---|---:|
