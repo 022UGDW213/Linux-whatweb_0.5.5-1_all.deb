@@ -418,7 +418,7 @@ Ruby (`ruby 3.0.2p107 (2021-07-07 revision 0db68f0233) [x86_64-linux-gnu]`), wit
 files installed system-wide — re-measured 2026-09-27.
 
 **There is no `whatweb-cli` in this package.** The only executable it ships is
-`usr/bin/whatweb` (`find data -type f -perm -u+x` → `./usr/bin/whatweb`, and nothing
+`usr/bin/whatweb` (`find data -type f -perm -u+x` → `data/usr/bin/whatweb`, and nothing
 else). The first pass of this README cited `ruby <extracted>/ruby/whatweb-cli`, a path
 that does not exist; the commands below are the ones that actually run.
 
