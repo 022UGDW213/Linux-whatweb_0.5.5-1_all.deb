@@ -186,6 +186,20 @@ Package page cross-check: `https://packages.debian.org/bullseye/whatweb` returns
 | `data/usr/share/whatweb/plugins/` | **1,821 files** = 1,818 `.rb` plugin definitions + `IpToCountry.csv`, `country-ips.dat`, `country-codes.txt` |
 | `data/usr/share/whatweb/my-plugins/` | 7 files, `plugin-tutorial-1.rb` … `plugin-tutorial-7.rb` |
 
+The seven `my-plugins/plugin-tutorial-*.rb` files are **upstream WhatWeb's own shipped
+tutorials**, not this repository's or its owner's work. Each carries WhatWeb's placeholder
+author/website lines verbatim — `"Your preferred name <email@address>"`,
+`website "http://example.com/"`, and in tutorial 3 `"@examplename"` — exactly as published
+in the Debian package:
+
+```sh
+grep -c 'preferred name\|example\.com' data/usr/share/whatweb/my-plugins/*.rb
+# → 2 lines per file, except plugin-tutorial-7.rb → 4  (all 7 files match)
+```
+
+They are correctly attributed third-party content (§10), not this repository's data and not
+a measurement: the placeholder strings are upstream's, so they are left byte-for-byte.
+
 The unpacked-size figure is the sum of the extracted files' bytes:
 
 ```sh
