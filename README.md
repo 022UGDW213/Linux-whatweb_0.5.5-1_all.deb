@@ -140,6 +140,39 @@ header metadata only:
 
 Reusing the original headers reproduces the Debian file exactly, as shown above.
 
+### Independent confirmation with Debian's own tool (`dpkg-deb`)
+
+The `.deb` rebuilt from the ZIP's three members is a **valid Debian package whose contents
+are identical to the live one**, checked with `dpkg-deb` rather than with `ar`/`tar`
+directly (re-run 2026-09-27):
+
+```sh
+ar rc from_zip.deb debian-binary control.tar.xz data.tar.xz
+
+dpkg-deb --info from_zip.deb
+# → "new Debian package, version 2.0.", size 2306152 bytes, control archive=48060 bytes,
+#   Package: whatweb / Version: 0.5.5-1 / Architecture: all — field-for-field the same as
+#   dpkg-deb --info whatweb_real.deb
+
+diff <(dpkg-deb -c whatweb_real.deb) <(dpkg-deb -c from_zip.deb)
+# → empty: the two content listings are identical, 1877 entries each (1861 files + 16 dirs)
+
+dpkg-deb --ctrl-tarfile <file> | sha256sum
+# → 6f16867a40ef40437ffa9a4d1e7ce971fb71daf751cace215e2890b5a8b5a04e   (both files)
+dpkg-deb --fsys-tarfile <file> | sha256sum
+# → 92f8bb77e3885f61337d84139896cd76f545ffadfa9bc504e2987cbc8e3f1626   (both files)
+
+dpkg-deb --extract from_zip.deb xz && find xz -type f | wc -l && find xz -type d | wc -l
+# → exit 0; 1861 files, 16 dirs
+dpkg-deb -W from_zip.deb
+# → whatweb	0.5.5-1
+```
+
+So the container bytes differ only in the `ar` member headers (§3 table), while the
+payload seen by `dpkg` itself — control fields, the full file list, and both uncompressed
+tar streams — is identical. (`dpkg-deb --ctrl-tarfile` hashes the *uncompressed* control
+tar, so its digest is not the `control.tar.xz` member hash `bff79925…` above.)
+
 Package page cross-check: `https://packages.debian.org/bullseye/whatweb` returns
 `<title>Debian -- Details of package whatweb in bullseye</title>` and
 `Package: whatweb (0.5.5-1)`.
@@ -164,6 +197,12 @@ Package page cross-check: `https://packages.debian.org/bullseye/whatweb` returns
 | `Ruby-Versions` | `all` |
 | `Description` | `Next generation web scanner` (full text in §6) |
 
+The same field set read with Debian's own tool rather than by unpacking the tarball —
+`dpkg-deb -I from_zip.deb` (the `.deb` rebuilt from this ZIP's members, §3) — lists
+`Package: whatweb`, `Version: 0.5.5-1`, `Architecture: all`, `Installed-Size: 19039` and
+the identical `Depends`/`Recommends`/`Homepage`, and reports `control archive=48060 bytes`
+with `control` 798 B/19 lines and `md5sums` 142,183 B/**1,861 lines**.
+
 `control.tar.xz` also carries `md5sums` (1,861 entries), `preinst`, `postinst`,
 `prerm`, `postrm` (debhelper 13.3.1–generated). The `postinst` performs one
 `dpkg-maintscript-helper symlink_to_dir /usr/share/whatweb/my-plugins
@@ -179,6 +218,7 @@ Package page cross-check: `https://packages.debian.org/bullseye/whatweb` returns
 |---|---:|
 | Files in `data.tar.xz` | **1,861** (identical to the `md5sums` line count) |
 | Directories in `data.tar.xz` | 16 (`tar -tvJf data.tar.xz \| awk '$1 ~ /^d/' \| wc -l` — counts the `./` root entry too; 15 excluding it) |
+| Total content entries | 1,877 (`dpkg-deb -c whatweb_real.deb \| wc -l` = 1,861 files + 16 dirs) |
 | Unpacked size (sum of the 1,861 file bytes) | **18,531,007** bytes (17.67 MiB) |
 | `data/usr/bin/whatweb` | 1 executable script |
 | `data/usr/lib/ruby/vendor_ruby/` | 27 files (core scanner + `whatweb/` submodules) |
@@ -496,6 +536,10 @@ Every 2026-09-26 value above was re-derived from scratch with the same commands.
 | Mirror vs ZIP members | `ar x` + `sha256sum` | 3/3 identical — unchanged (§3) |
 | Header-preserving rebuild | Python `ar` rebuild reusing the live `.deb`'s headers | `BYTE-IDENTICAL: True` (§3) |
 | Plain `ar rc` rebuild | `ar rc` on the three members | same 2,306,152 B, `cmp` differs at byte 22 (name-field `/`, mtime `0`, mode `644`); offsets 21 / 24-35 / 48-55 confirmed byte-by-byte (§3) |
+| `dpkg-deb --info` | `dpkg-deb -I from_zip.deb` | accepts the ZIP-derived `.deb`; size 2,306,152 B, control archive 48,060 B, all control fields identical to the live file (§3, §4) |
+| `dpkg-deb` content listing | `diff <(dpkg-deb -c whatweb_real.deb) <(dpkg-deb -c from_zip.deb)` | **empty** — identical 1,877-entry listings (§3) |
+| `dpkg-deb` tar streams | `dpkg-deb --ctrl-tarfile <f> \| sha256sum`; `--fsys-tarfile <f> \| sha256sum` | `6f16867a…` and `92f8bb77…`, identical for both files (§3) |
+| `dpkg-deb --extract` / `-W` | `dpkg-deb -x from_zip.deb xz`; `dpkg-deb -W from_zip.deb` | exit 0 → 1,861 files / 16 dirs; `whatweb  0.5.5-1` (§3, §5) |
 | `control` metadata | `tar -xJf control.tar.xz -C ctl && cat ctl/control` | §4 table unchanged; `md5sums` 1,861 lines |
 | Maintainer scripts | `cat ctl/{preinst,postinst,prerm,postrm}` | all four `dh_installdeb/13.3.1`; `postinst` runs the `symlink_to_dir … 0.4.9-2` helper (§4) |
 | File/dir counts | `find data -type f \| wc -l`; `find data -type d \| wc -l` | 1,861 files / 16 dirs — unchanged (§5) |
