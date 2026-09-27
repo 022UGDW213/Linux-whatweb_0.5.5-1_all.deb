@@ -281,9 +281,11 @@ The package's own bundled `usr/share/doc/whatweb/README.md.gz` carries the badge
 ## 6. Honest note: the copied page capture contradicts the package in three places
 
 `src/Next generation web scanner.md` is a **verbatim copy of a pkgs.org-style package
-page** (its own body ends with `©2009-2022 - Packages for Linux and Unix`). It is kept
-as a provenance artifact. Three of its statements do **not** match the package bytes it
-sits next to, and the measured value is given here instead:
+page**, kept as a provenance artifact; the captured page text ends with
+`©2009-2022 - Packages for Linux and Unix` (the file as committed has two more non-page
+lines after it — see the notes at the end of this section). Three of the page's statements
+do **not** match the package bytes it sits next to, and the measured value is given here
+instead:
 
 | Statement in the copied page | What I measured |
 |---|---|
@@ -303,10 +305,16 @@ unaltered, and the file's pre- and post-header hashes are recorded in §2.
 Two precision notes on that file's shape, both measured on 2026-09-27:
 
 - The captured **page** text ends with `©2009-2022 - Packages for Linux and Unix`
-  (confirmed independently by OCR of the screenshot, §8). Below that line the markdown
-  file carries two further lines that are **not** page content — an owner-appended
-  `.src/` pointer and the GitHub blob URL of the screenshot:
-  `tail -2 "src/Next generation web scanner.md"`.
+  (confirmed independently by OCR of the screenshot, §8). The 117-line markdown file
+  carries two further lines after that, and neither is page content: one whitespace-only
+  line, then one line holding an owner-appended `.src/` pointer immediately followed by
+  the GitHub blob URL of the screenshot (same line, no separator):
+
+  ```sh
+  tail -2 "src/Next generation web scanner.md" | cat -A
+  # → "  $"   (two spaces, nothing else)
+  # → "  .src/https://github.com/022UGDW213/Linux-whatweb_0.5.5-1_all.deb/blob/1ae9f25481a6d17ae24031170aaaccd02c9d6c5a/Web%20capture_23-10-2022_52453_ubuntu.pkgs.org.jpeg$"
+  ```
 - The header's claim that the text below it is unaltered is exact:
   `git show f12719e:"src/Next generation web scanner.md" > /tmp/pre.md` then
   `tail -n +4 "src/Next generation web scanner.md" > /tmp/post.md` gives an **empty**
