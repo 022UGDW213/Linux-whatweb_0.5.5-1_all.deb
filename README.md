@@ -178,7 +178,7 @@ Package page cross-check: `https://packages.debian.org/bullseye/whatweb` returns
 | Measurement | Value |
 |---|---:|
 | Files in `data.tar.xz` | **1,861** (identical to the `md5sums` line count) |
-| Directories in `data.tar.xz` | 16 |
+| Directories in `data.tar.xz` | 16 (`tar -tvJf data.tar.xz \| awk '$1 ~ /^d/' \| wc -l` — counts the `./` root entry too; 15 excluding it) |
 | Unpacked size (sum of the 1,861 file bytes) | **18,531,007** bytes (17.67 MiB) |
 | `data/usr/bin/whatweb` | 1 executable script |
 | `data/usr/lib/ruby/vendor_ruby/` | 27 files (core scanner + `whatweb/` submodules) |
